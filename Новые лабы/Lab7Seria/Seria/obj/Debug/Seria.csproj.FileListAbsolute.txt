@@ -1,0 +1,6 @@
+C:\Users\user\source\repos\Seria\Seria\bin\Debug\Seria.exe.config
+C:\Users\user\source\repos\Seria\Seria\bin\Debug\Seria.exe
+C:\Users\user\source\repos\Seria\Seria\bin\Debug\Seria.pdb
+C:\Users\user\source\repos\Seria\Seria\obj\Debug\Seria.csproj.CoreCompileInputs.cache
+C:\Users\user\source\repos\Seria\Seria\obj\Debug\Seria.exe
+C:\Users\user\source\repos\Seria\Seria\obj\Debug\Seria.pdb
