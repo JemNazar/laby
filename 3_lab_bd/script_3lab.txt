@@ -1,0 +1,134 @@
+
+CREATE TABLE NameLF
+(
+	ID_N int not null IDENTITY(1,1)  PRIMARY KEY,
+	Name_Salat  varchar(50) NOT NULL,
+	FIO varchar(100) NOT NULL,
+	Chef_Pos varchar(100) NOT NULL,
+)
+
+CREATE TABLE Price
+(
+	ID_Pr int not null IDENTITY(1,1)  PRIMARY KEY,
+	Name_Salat varchar(50)  NOT NULL,
+	price varchar(100)  NOT NULL,
+	cook_method varchar(300) NOT NULL,
+	)
+
+CREATE TABLE Prod_Suppl(
+	ID_P int not null IDENTITY(1,1)  PRIMARY KEY,
+	Name_Ingrid varchar(50) NOT NULL,
+	Ingrid_Mera varchar(100)  NOT NULL,
+	prod_supp varchar(100) NOT NULL,
+	)
+
+CREATE TABLE Quantities(
+	ID_Q int not null IDENTITY(1,1)  PRIMARY KEY,
+	Name_Salat varchar(50)  NOT NULL,
+	Name_Ingrid varchar(100)  NOT NULL,
+	Ingr_Quan varchar(100)  NOT NULL,
+	)
+
+CREATE TABLE Type_Dish(
+	ID_T int not null IDENTITY(1,1)  PRIMARY KEY,
+	TypeDish varchar(50)  NOT NULL,
+	Time_Dish int NOT NULL,
+	)
+
+INSERT NameLF (Name_Salat, FIO, Chef_Pos) VALUES ('Салат "Оливье"', 'Иванов С.Ф.', 'шеф-повар')
+GO
+INSERT NameLF (Name_Salat, FIO, Chef_Pos) VALUES ('Салат «Оливье»', 'Петров В.А.', 'ст. помошник')
+GO
+INSERT NameLF (Name_Salat, FIO, Chef_Pos) VALUES ('Салат «Цезарь»', 'Васильев А.А.', 'зам. шеф. повара')
+GO
+INSERT NameLF (Name_Salat, FIO, Chef_Pos) VALUES ('Суп «Солянка»', 'Иванов С.Ф.', 'шеф-повар')
+GO
+INSERT NameLF (Name_Salat, FIO, Chef_Pos) VALUES ('Салат "Оливье"', 'Иванов С.Ф.', 'шеф-повар')
+GO
+INSERT NameLF (Name_Salat, FIO, Chef_Pos) VALUES ('Салат «Оливье»', 'Петров В.А.', 'ст. помошник')
+GO
+INSERT NameLF (Name_Salat, FIO, Chef_Pos) VALUES ('Салат «Цезарь»', 'Васильев А.А.', 'зам. шеф. повара')
+GO
+INSERT NameLF (Name_Salat, FIO, Chef_Pos) VALUES ('Суп «Солянка»', 'Иванов С.Ф.', 'шеф-повар')
+GO
+
+
+INSERT Price ([Name_Salat], [price], [cook_method]) VALUES ( N'Салат «Оливье»', N'50', N'...')
+GO
+INSERT Price ([Name_Salat], [price], [cook_method]) VALUES (N'Салат «Цезарь»', N'65', N'...')
+GO
+INSERT Price ([Name_Salat], [price], [cook_method]) VALUES ( N'Суп «Солянка»', N'100', N'...')
+GO
+
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES ( N'картофель', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'яйца', N'шт', N'Колхоз «Светлый путь»')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES ( N'мясо', N'гр', N'Колхоз «Светлый путь»')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'морковь', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'огурцы', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'яблоки', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'лук', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'соль', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'майонез', N'гр', N'Тюмень-молоко')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'Курица копченая', N'гр', N'Колхоз «Светлый путь»')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'Сухарики «Кириешки»', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'Ветчина', N'гр', N'Колхоз «Светлый путь»')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'Оливки', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'Томатная паста', N'гр', N'ХозТоргОвощи')
+GO
+INSERT Prod_Suppl ([Name_Ingrid], [Ingrid_Mera], [prod_supp]) VALUES (N'Лимон', N'шт', N'ХозТоргОвощи')
+
+
+
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'картофель', N'500')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'яйца', N'4')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'мясо', N'400')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'морковь', N'500')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'огурцы', N'500')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'яблоки', N'200')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'лук', N'100')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'соль', N'4')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Оливье»', N'майонез', N'50')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Цезарь»', N'Курица копченая', N'500')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Цезарь»', N'майонез', N'50')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Салат «Цезарь»', N'Сухарики «Кириешки»', N'100')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Суп «Солянка»', N'Ветчина', N'300')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Суп «Солянка»', N'Оливки', N'100')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Суп «Солянка»', N'Томатная паста', N'50')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Суп «Солянка»', N'Лимон', N'1')
+GO
+INSERT Quantities ([Name_Salat], [Name_Ingrid], [Ingr_Quan]) VALUES (N'Суп «Солянка»', N'Картофель', N'100')
+
+
+
+INSERT Type_Dish (TypeDish, Time_Dish) VALUES ('Салаты', 20)
+GO
+INSERT Type_Dish ([TypeDish], [Time_Dish]) VALUES (N'Супы', 60)
+GO

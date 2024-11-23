@@ -1,0 +1,68 @@
+from itertools import chain
+from os import curdir
+from sqlite3 import Cursor
+from tokenize import Name
+from unicodedata import name
+import pyodbc
+
+conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=WIN-32HV9LPIMFH;DATABASE=MenuKafe;Trusted_Connection=yes;')
+cursor = conn.cursor()
+# Trusted Connection to Named Instance
+
+def Change():
+    NameSalat=input("Какое блюдо заменить:")
+    price_salat=input("Новая цена:")
+    storedProc1 = "Exec [Меню Кафе].[dbo].[update_Salat]({0}, {1})".format(NameSalat,price_salat)
+    cursor.execute(storedProc1)
+def delete():
+    NameSalat = input("Блюдо, которое вы хотите удалить")
+    storedProc2 = "Exec [Меню Кафе].[dbo].[Drop_Salat]({0})".format(NameSalat)
+    cursor.execute(storedProc2, NameSalat)
+def list_dishes():
+    stored = "Select * from [Меню Кафе].[dbo].[List_Salat]"
+    cursor.execute(stored)
+    row3 = cursor.fetchone()
+    while row3:
+        #Print the row
+       print(str(row3[0]) + " : " + str(row3[1] or ''))
+       row3 = cursor.fetchone()
+def list_ingredients():
+    stored1 = "Select * from [Меню Кафе].[dbo].[List_Ingr]"
+    cursor.execute(stored1)
+    row4 = cursor.fetchone()
+    while row4:
+        # Print the row
+       print(str(row4[0]) + " : " + str(row4[1] or ''))
+       row4 = cursor.fetchone()
+def exit_menu():
+    cursor.close()
+    del cursor
+    conn.close()
+
+
+    
+print("Добро пожаловать в меню ресторана, что вы хотите сделать?")
+try:    
+    while True:
+        i = input("\tНажмите 1, чтобы изменить значения салата\n\tНажмите 2, чтобы изменить удалить салат\n\tНажмите 3, чтобы увидеть список продуктов\n\tНажмите 4 список ингредиентов.\n\tНажмите 0, чтобы выйти из меню. ")
+        if i == "1":
+            print("Изменение значений")
+            Change()
+        elif i == "2":
+            print("Удалить запись")
+            delete()
+        elif i == "3":
+            print("список тарелок")
+            list_dishes()
+        elif i == "4":
+            print("Список ингредиентов")
+            list_ingredients
+        elif i == "0":
+            print("Спасибо за использование меню, пока.")
+            exit_menu()
+            exit()
+        else:
+            print("Неверный вариант, попробуйте еще раз")
+ 
+except Exception as e:
+    print("Error: %s" % e)

@@ -1,0 +1,265 @@
+
+	--Должности
+	create table Rang
+	(
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --Код
+		Name varchar(100) not null, --Название должности
+		PayValue decimal(18,2) , --Оклад
+		Duty varchar(255), --Обязности
+		Must varchar(255), --Требования
+	)
+	go
+	--Служащие
+	create table Person
+	( 
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --код
+		FirstName varchar(50) not null, --Фамилия
+		LastName varchar(50) not null, --Имя 
+		MiddleName varchar(50), --Отчество
+		BDay datetime, --дата рождения
+		Sex bit, -- пол, 0 - М, 1 - Ж
+		Address varchar(100), --Адрес
+		Number varchar(50), --Номер телефона
+		Passport varchar(100) unique, --Серия и номер паспорта кем выдан
+		Rang int default 1, --Должность номер ID из таблицы Rang
+		CHECK (Number like '+7%' AND LEN(Number)=12),
+		CHECK (Sex = 1 OR Sex = 0),
+		CHECK (Rang >= 1),
+		FOREIGN KEY (Rang) REFERENCES Rang (ID)
+		ON DELETE SET DEFAULT
+	)
+	go
+	--Типы работ
+	create table TypeOfWorks
+	(
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --код
+		Name varchar(100), --название
+		Description varchar(255), --Описание
+		Prise decimal(18,2), --цена
+	)
+	go
+	--Материалы
+	create table Material
+	(
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --код
+		Name varchar(100), --Навзвание
+		Box varchar(100), --Упаковка 
+		Description varchar(255), --Описание
+		Prise decimal(18,2), --цена
+		CHECK (Prise >= 0)
+	)
+	go
+	--Используемые материалы как отдельная таблица
+	create table UseMaterial
+	(
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --код
+		ToWID int not null, --код вида работ
+		MID int not null, --код материала
+		CHECK (ToWID >= 1),
+		CHECK (MID >= 1),
+		FOREIGN KEY (ToWID) REFERENCES TypeOfWorks (ID)
+			ON DELETE CASCADE,
+		FOREIGN KEY (MID) REFERENCES Material (ID)
+			ON DELETE CASCADE
+	)
+	go
+	--Бригады
+	create table Brigade
+	(
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --код
+		Name varchar(255) NOT NULL unique, --Название бригады
+	)
+	--Служащие в бригадах
+	create table PersonInBrigade
+	(
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --код
+		BID int not null, --код бригады
+		PID int not null, --код солужащего
+		CHECK (BID >= 1),
+		CHECK (PID >= 1),
+		FOREIGN KEY (BID) REFERENCES Brigade (ID)
+			ON DELETE CASCADE,
+		FOREIGN KEY (PID) REFERENCES Person (ID)
+			ON DELETE CASCADE
+	)
+	--Заказчики
+	create table Customer
+	(
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --код
+		Name varchar(255) unique not null, --Имя/Название
+		Address varchar(255), --Адрес
+		Number varchar(50), --Номер телефона
+		CHECK (Number like '+7%' AND LEN(Number)=12)
+	)
+	--Работы
+	create table Works
+	(
+		ID int not null IDENTITY(1,1)  PRIMARY KEY, --код
+		ToWID int not null, --код вида работ
+		BID int, --код бригады
+		Prise decimal(18,2), --Цена
+		SDATE Date, --Дата начала
+		EDATE Date, --Дата конца
+		CID int, --код заказчика
+		IsDone Bit default 0, --Отметка о завершении
+		IsPay Bit default 0, --Отметка об оплате
+		CHECK (BID >= 1),
+		CHECK (ToWID >= 1),
+		CHECK (Prise >= 0),
+		CHECK (IsDone = 0 OR IsDone = 1),
+		CHECK (IsPay = 0 OR IsPay = 1),
+		CHECK (EDATE >= SDATE),
+		FOREIGN KEY (BID) REFERENCES Brigade (ID)
+			ON DELETE SET NULL,
+		FOREIGN KEY (CID) REFERENCES Customer (ID)
+			ON DELETE cascade,
+		FOREIGN KEY (ToWID) REFERENCES TypeOfWorks (ID)
+			ON DELETE NO ACTION
+	)
+
+
+	--Rang 
+	INSERT INTO Rang (Name,PayValue,Duty,Must) 
+	values ('Стажер',0,'Обучение','В зависимости от желаемой должности');
+	INSERT INTO Rang (Name,PayValue,Duty,Must) 
+	values ('Директор',65000,'Руководить','Отчитываться перед учередителями');
+	INSERT INTO Rang (Name,PayValue,Duty,Must) 
+	values ('Бригадир',40000,'Руководить бригадой','Починение указаниям руководства');
+	INSERT INTO Rang (Name,PayValue,Duty,Must) 
+	values ('Строитель',30000,'Выполнение поставленных работ','Подчиняться указаниям бригадира');
+	INSERT INTO Rang (Name,PayValue,Duty,Must) 
+	values ('Бухгалтер',25000,'Ведение бухгалтерского учета','Работа с электронными документами');
+	INSERT INTO Rang (Name,PayValue,Duty,Must) 
+	values ('Водитель',20000,'Развоз рабочих','Водительские права');
+	--Person
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Иван','Петров','Аркадьевич',1985-10-21, 0,'+79978255699','1234567890',1);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Дмитрий','Баширов','Павлович',1981-05-10, 0,'+79963211698','1234567891',1);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Эммануил ','Гедеонович ','Виторган',1971-03-10, 0,'+79964567855','8244569891',2);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Виктор','Иванов','Иванович',1980-01-01, 0,'+79963211699','7234567990',3);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Борис','Бритва','Игнатьев',1968-11-06, 0,'+79933312679','1239999890',3);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Игорь','Федоров','Андреевич',1997-02-29, 0,'+79964787899','5245557890',4);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Юрий','Жомов','Андреевич',1997-03-10, 0,'+79963211699','1234444670',4);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Анатолий','Андреев','Александрович',1998-09-15, 0,'+79961235687','7554567790',4);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Александр','Дробницкий','Юрьевич',1995-01-01, 0,'+79773255649','1454554890',4);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Елизавета','Мартиросян','Эдуардовна',1980-10-10, 1,'+79963100690','6234500790',5);
+	INSERT INTO Person (FirstName, LastName, MiddleName, BDay, Sex, Number, Passport, Rang)
+	values ('Герман','Фишер','Адольфович',1980-01-01, 0,'+79963211699','1233567790',6);
+	--TypeOfWorks
+	INSERT INTO TypeOfWorks (Name,Description,Prise) values ('Натяжной потолок','Установка натяжного потолка в помещении',40000);
+	INSERT INTO TypeOfWorks (Name,Description,Prise) values ('Обшивка стен гипсокартоном','Обшивка стен гипсокартоном в помещении',50000);
+	INSERT INTO TypeOfWorks (Name,Description,Prise) values ('Сборка чернового пола','Установка чернового пол из указаных материалов',50000);
+	INSERT INTO TypeOfWorks (Name,Description,Prise) values ('Кладка','Возведение стен/перегородок из кирпича или иного материала',60000);
+	INSERT INTO TypeOfWorks (Name,Description,Prise) values ('Установка оконных рам','Установка оконных рам под ключ',30000);
+	--Material
+	INSERT INTO Material (Name,Box, Description, Prise) values ('Натяжной потолок','Рулон','Натяжной потолок 1м кв',1000);
+	INSERT INTO Material (Name,Box, Description, Prise) values ('Гипсокартон','Нет','10 листов',5000);
+	INSERT INTO Material (Name,Box, Description, Prise) values ('Кирпич','Нет','Кирпич 100шт',2000);
+	INSERT INTO Material (Name,Box, Description, Prise) values ('Доска ель','Связка','10шт 3м',1200);
+	INSERT INTO Material (Name,Box, Description, Prise) values ('Пластиковое окно типовое','Кортонный короб','1шт 3м*2,5м',15000);
+	INSERT INTO Material (Name,Box, Description, Prise) values ('Цемент','Мешок','1шт 25кг',1000);
+	--UseMaterial
+	INSERT INTO UseMaterial(ToWID, MID) values (1,1);
+	INSERT INTO UseMaterial(ToWID, MID) values (2,2);
+	INSERT INTO UseMaterial(ToWID, MID) values (3,4);
+	INSERT INTO UseMaterial(ToWID, MID) values (4,3);
+	INSERT INTO UseMaterial(ToWID, MID) values (5,5);
+	INSERT INTO UseMaterial(ToWID, MID) values (4,6);
+	--Brigade
+	INSERT INTO Brigade(Name) values ('Областная');
+	INSERT INTO Brigade(Name) values ('Главная');
+	--PersonInBrigade
+	INSERT INTO PersonInBrigade (PID,BID) values (1,1);
+	INSERT INTO PersonInBrigade (PID,BID) values (4,1);
+	INSERT INTO PersonInBrigade (PID,BID) values (6,1);
+	INSERT INTO PersonInBrigade (PID,BID) values (7,1);
+	INSERT INTO PersonInBrigade (PID,BID) values (2,2);
+	INSERT INTO PersonInBrigade (PID,BID) values (4,2);
+	INSERT INTO PersonInBrigade (PID,BID) values (8,2);
+	INSERT INTO PersonInBrigade (PID,BID) values (9,2);
+	--Customer
+	INSERT INTO Customer (Name,Number) values ('ОАО Инвест','+79959567855');
+	INSERT INTO Customer (Name,Number) values ('ООО МаксИКО','+79954477855');
+	INSERT INTO Customer (Name,Number) values ('Генадий Петрович Захарченко','+79933277855');
+	--Works
+	INSERT INTO Works (ToWID,BID,CID,IsDone,IsPay,Prise,SDATE,EDATE) 
+	values( 1,1,1,0,0, 
+	(SELECT SUM(Material.Prise) from Material,UseMaterial 
+	WHERE Material.Id = UseMaterial.MID AND UseMaterial.ToWID = 1) + 
+	(select TypeOfWorks.Prise from	TypeOfWorks where TypeOfWorks.id = 1),'2018-01-10','2018-01-20');
+	INSERT INTO Works (ToWID,BID,CID,IsDone,IsPay,Prise,SDATE,EDATE) 
+	values( 4,2,2,1,1, 
+	(SELECT SUM(Material.Prise) from Material,UseMaterial 
+	WHERE Material.Id = UseMaterial.MID AND UseMaterial.ToWID = 4) + 
+	(select TypeOfWorks.Prise from	TypeOfWorks where TypeOfWorks.id = 4),'2018-01-10','2018-01-20');
+	INSERT INTO Works (ToWID,BID,CID,IsDone,IsPay,Prise,SDATE,EDATE)  
+	values( 5,1,3,1,0, 
+	(SELECT SUM(Material.Prise) from Material,UseMaterial 
+	WHERE Material.Id = UseMaterial.MID AND UseMaterial.ToWID = 5) + 
+	(select TypeOfWorks.Prise from	TypeOfWorks where TypeOfWorks.id = 5),'2018-01-25','2018-01-30');
+	go
+
+
+	--Триггеры
+
+	CREATE TRIGGER trigger1 ON Works
+	after update, insert
+	AS
+	
+	if ((select count(*) from (inserted INNER JOIN works on inserted.cid = works.cid and inserted.towid = works.towid))> 1)
+		BEGIN
+		ROLLBACK TRANSACTION
+		RAISERROR ('Один заказчик не может сделать несколько заказов на один и тот же вид работ!',16,10);
+		END
+	go
+	
+	CREATE TRIGGER trigger3 ON Works
+	FOR DELETE
+	AS
+	if ((select count(*) from deleted where deleted.IsPay = 0 OR deleted.IsDone = 0) > 0)
+		BEGIN
+		ROLLBACK TRANSACTION
+		RAISERROR ('Не оплаченные или не сданные заказы нельзя удалять!',16,10);
+		END
+	go
+
+	CREATE TRIGGER trigger2 ON Works
+	after update, insert
+	AS
+	if ((select count(*) from inserted A, works 
+		where
+		A.BID = Works.BID AND
+		(
+			(A.SDATE BETWEEN Works.SDATE and Works.EDATE) or
+			(A.EDATE BEtWEEN Works.SDATE and Works.EDATE)
+		)		
+		or
+		(
+			(Works.SDATE BETWEEN A.SDATE and A.EDATE) or 
+			(Works.EDATE BEtWEEN A.SDATE and A.EDATE)
+		)) > 1)--Должно быть 0, но 1, покажу на практике почему так (точнее покажу что Insert таблица и копия work - IWork, это разные вещи)
+		BEGIN
+		ROLLBACK TRANSACTION
+		RAISERROR ('В этот период бригада занята!',16,10);
+		END
+	go
+	
+	CREATE TRIGGER trigger4
+	ON DATABASE
+	FOR DROP_USER
+	AS BEGIN
+		ROLLBACK
+		RAISERROR ('Удаление пользователей запрещено!',16,10);
+	END
+	go
+	
+	

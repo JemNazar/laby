@@ -1,0 +1,65 @@
+-- Хранимая процедура которая будет добавлять новую запись.
+CREATE PROCEDURE P1
+(   
+	--Входящие параметры
+	@SalataName Varchar(100),
+	@Price int,
+	@COOKMETHOD varchar(100),
+	@TYPEDISH varchar(100),
+	@TIME INT 
+	
+) 	
+	AS
+BEGIN
+      
+	Declare @idsalat int
+	
+	SET @idsalat = (SELECT DISTINCT Salata.ID_Salat
+	from Povar_Salat left join Povar on Povar_Salat.ID_Povar = Povar.ID_Povar
+	Left join Salata on Povar_Salat.ID_Salat = Salata.ID_Salat);
+	
+	--Инструкции, реализующие Ваш алгоритм
+    --Обработка входящих параметров
+    --Удаление лишних пробелов в начале и в конце текстовой строки
+	Set @SalataName = LTRIM(RTRIM(@SalataName));
+  
+	--Добавляем новую запись
+	INSERT INTO Salata (Name_Salat, price, cook_method, TypeDish, Time_Dish) 
+	VALUES( @SalataName, @Price, @COOKMETHOD, @TYPEDISH, @TIME)
+
+	insert into Povar_Salat(ID_Povar, ID_Salat) values (3, @idsalat)	 
+	Select * from Povar_Salat left join Povar on Povar_Salat.ID_Povar = Povar.ID_Povar
+	Left join Salata on Povar_Salat.ID_Salat = Salata.ID_Salat;
+	
+end
+
+go
+
+EXEC P1  "Крабовый", 100, "...", "Салаты", 30
+
+
+
+
+
+
+-------
+CREATE PROCEDURE P2 (
+  @name varchar(100)
+  )
+	AS 
+	BEGIN
+
+	select QQ1.q as [Имя Салата], QQ2.q [Количество ингридиентов], QQ3.q as [Общая стоимость салатов(руб.)], QQ4.q as [средняя время приготовления] from
+		((select  'Имя салата - ' +  q2.Name_Salat as "q" from (select Name_Salat from Salata where Salata.Name_Salat = @name) as q2) as QQ1
+		cross join
+		(select 'количество ингридиентов - ' + convert(varchar,count(q2.ID_Ing)) as"q"  from (select Ing_Salat.ID_Ing from Ing_Salat  where ID_Ing = (Select ID_Salat from Salata where Salata.Name_Salat = @name)) as q2) as QQ2
+		cross join
+		(select 'Общая стоимость - ' +  convert(varchar,sum(q2.price)) as "q"  from (select price from Salata  where  Salata.Name_Salat = @name ) as q2) as QQ3
+		cross join
+		(select 'средняя время приготовления - ' + convert(varchar,avg(q2.Time_Dish))  as"q"  from (select Salata.Time_Dish from Salata  where Salata.Name_Salat = @name ) as q2) as QQ4
+		cross join
+		(select ' ' as q) as QQ5) order by "Имя Салата" desc; --сортировка нужна для расположения итоговой строки последней
+	END
+go
+
+EXEC P2 'Салат «Оливье»'
